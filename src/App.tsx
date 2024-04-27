@@ -1,5 +1,9 @@
+import Header from './component/Header';
 function App() {
-  return <div className="App">메인 페이지입니다.</div>;
+  return <>
+          <Header></Header>
+        </>
+  
 }
 
 export default App;
