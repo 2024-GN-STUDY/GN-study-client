@@ -1,16 +1,34 @@
 import { Button, FormControl, TextField } from '@mui/material';
 import Header from '../component/Header';
 import { useState } from 'react';
+import SearchAddr from '../component/modal/SearchAddr';
 
 
 function Login() {
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
   const [formDatas, setFormDatas] = useState({
-    name: "",
-    password: "",
-    email: "",
+    base_addr: "",
+    detail_addr: "",
   })
 
+
+
+  const setAddr = (addr: string) => {
+    setFormDatas({
+      ...formDatas,
+      base_addr: addr,
+    })
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormDatas({
@@ -18,7 +36,6 @@ function Login() {
       [e.target.name]: e.target.value,
     })
   }
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,6 +61,7 @@ function Login() {
 
 
 
+
   return (
     <>
       <Header></Header>
@@ -52,30 +70,24 @@ function Login() {
           <FormControl>
 
             <TextField
-              label="name"
-              name="name"
-              value={formDatas.name}
+              label="base_addr"
+              name="base_addr"
+              value={formDatas.base_addr}
               onChange={handleChange}
               margin="normal"
             />
 
+            <button type="button" onClick={openModal}>주소찾기</button>
+
             <TextField
-              type="password"
-              label="Password"
-              name="password"
-              value={formDatas.password}
+              type="detail_addr"
+              label="detail_addr"
+              name="detail_addr"
+              value={formDatas.detail_addr}
               onChange={handleChange}
               margin="normal"
             />
 
-            <TextField
-              type="email"
-              label="email"
-              name="email"
-              value={formDatas.email}
-              onChange={handleChange}
-              margin="normal"
-            />
 
             <Button type="submit" variant="contained" color="primary">
               Submit
@@ -84,6 +96,10 @@ function Login() {
           </FormControl>
         </form>
       </main>
+
+      {isOpen && <div className='addr_modal__background'>
+        <SearchAddr setAddr={setAddr} closeModal={closeModal} ></SearchAddr>
+      </div>}
     </>
   )
 }

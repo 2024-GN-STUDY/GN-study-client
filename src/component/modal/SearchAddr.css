@@ -1,0 +1,64 @@
+.addr_modal {
+    position: fixed;
+    z-index: 99;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 400px;
+    height: 600px;
+    border: 1px solid;
+}
+
+.addr_modal__background {
+    /* display: none; */
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 98;
+    width: 100%;
+    height: 100%;
+}
+
+.addr_modal__wrap {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.addr_modal__header {
+    background-color: #ececec;
+    border-bottom: 2px solid #e1e1e1;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.addr_modal__content {
+    height: 100%;
+}
+
+.addr_modal_closeBtn {
+    cursor: pointer;
+    position: absolute;
+    top: 6px;
+    right: 0;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    /* height: 13px; */
+    /* padding-right: 6px; */
+    font-size: 19px;
+    /* font-weight: bold; */
+    margin-right: 5px;
+    padding: 3px;
+    border-radius: 20px;
+
+
+}
+
+.addr_modal_closeBtn:hover {
+    background-color: #b0b0b0;
+}
