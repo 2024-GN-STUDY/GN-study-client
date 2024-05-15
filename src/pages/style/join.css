@@ -1,0 +1,13 @@
+.form_inner {
+  display: flex;
+  margin-bottom: 10px;
+}
+.form_inner .emailCheck {
+  margin-left: 10px;
+}
+.form_inner > p {
+  width: 120px;
+}
+.form_inner input {
+  width: 500px;
+}

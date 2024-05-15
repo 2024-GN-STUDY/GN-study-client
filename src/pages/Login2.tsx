@@ -4,25 +4,16 @@ import { useState } from "react";
 
 function Login() {
   const [formDatas, setFormDatas] = useState({
-    email: "",
+    name: "",
     password: "",
+    email: "",
   });
-  const [emailError, setEmailError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
     setFormDatas({
       ...formDatas,
       [e.target.name]: e.target.value,
     });
-    if (name === "email") {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(value)) {
-        setEmailError("유효한 이메일 주소를 입력하세요.");
-      } else {
-        setEmailError("");
-      }
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -50,19 +41,15 @@ function Login() {
   return (
     <>
       <Header></Header>
-      <h1>로그인</h1>
       <main style={{ margin: "10px" }}>
         <form onSubmit={handleSubmit}>
           <FormControl>
             <TextField
-              type="email"
-              label="email"
-              name="email"
-              value={formDatas.email}
+              label="name"
+              name="name"
+              value={formDatas.name}
               onChange={handleChange}
               margin="normal"
-              error={!!emailError}
-              helperText={emailError}
             />
 
             <TextField
@@ -74,8 +61,17 @@ function Login() {
               margin="normal"
             />
 
+            <TextField
+              type="email"
+              label="email"
+              name="email"
+              value={formDatas.email}
+              onChange={handleChange}
+              margin="normal"
+            />
+
             <Button type="submit" variant="contained" color="primary">
-              로그인
+              Submit
             </Button>
           </FormControl>
         </form>
