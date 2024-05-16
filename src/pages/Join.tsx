@@ -2,6 +2,7 @@ import { Button, FormControl, TextField } from "@mui/material";
 import Header from "../component/Header";
 import { useState } from "react";
 import "./style/join.css";
+import SearchAddr from '../component/modal/SearchAddr';
 
 function Join() {
   const [formDatas, setFormDatas] = useState({
@@ -11,8 +12,11 @@ function Join() {
     birth_dt: "",
     phone_num: "",
     age: "",
-    addr: "",
+    baseAddr: "",
+    detailAddr: "",
   });
+
+  const [isOpen, setIsOpen] = useState(false); // 주소 모달
 
   // 이메일 중복체크
   const [emailError, setEmailError] = useState("");
@@ -65,15 +69,15 @@ function Join() {
   const checkEmailDuplication = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/users/signup?email=${formDatas.email}` //이거를 어떻게 해야될지 모르겠어요
+        `http://localhost:8083/users/signup/check-email?email=${formDatas.email}` //이거를 어떻게 해야될지 모르겠어요
       );
-      const isEmailTaken = await response.json();
+      const isEmailTaken = !response.ok;
       if (isEmailTaken) {
         alert("이메일이 이미 사용 중입니다.");
       } else {
         alert("사용 가능한 이메일입니다.");
+        setIsEmailChecked(true); // 중복 체크 완료
       }
-      setIsEmailChecked(true); // 중복 체크 완료
     } catch (error) {
       console.error("이메일 중복 체크 중 오류가 발생했습니다:", error);
     }
@@ -100,25 +104,45 @@ function Join() {
     }
 
     console.log(formDatas); // 데이터 내용 확인
-    // try {
-    //   const response = await fetch("http://localhost:8080/users/signup/", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(formDatas),
-    //   });
-    //   console.log(response);
-    //   if (response.ok) {
-    //     console.log("폼 데이터가 성공적으로 전송되었습니다.");
-    //     // 성공적으로 요청을 보낸 후에 추가적인 작업을 수행할 수 있습니다.
-    //   } else {
-    //     console.error("서버에서 오류 응답을 받았습니다.");
-    //   }
-    // } catch (error) {
-    //   console.error("요청을 보내는 도중에 오류가 발생했습니다:", error);
-    // }
+    try {
+      const response = await fetch("http://localhost:8083/users/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formDatas),
+      });
+      console.log(response);
+      if (response.ok) {
+        console.log("폼 데이터가 성공적으로 전송되었습니다.");
+        // 성공적으로 요청을 보낸 후에 추가적인 작업을 수행할 수 있습니다.
+      } else {
+        console.error("서버에서 오류 응답을 받았습니다.");
+      }
+    } catch (error) {
+      console.error("요청을 보내는 도중에 오류가 발생했습니다:", error);
+    }
   };
+
+
+
+  // #region 주소 api 관련
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  const setAddr = (addr: string) => {
+    setFormDatas({
+      ...formDatas,
+      baseAddr: addr,
+    })
+  }
+
+  // #endregion
 
   return (
     <>
@@ -207,12 +231,23 @@ function Join() {
             <div className="form_inner">
               <p>주소</p>
               <TextField
-                name="addr"
-                type="text"
-                value={formDatas.addr}
+                label="baseAddr"
+                name="baseAddr"
+                value={formDatas.baseAddr}
                 onChange={handleChange}
-                label="주소"
-                variant="outlined"
+                margin="normal"
+                disabled={true}
+              />
+
+              <Button type="button" onClick={openModal}>주소찾기</Button>
+
+              <TextField
+                type="detailAddr"
+                label="detailAddr"
+                name="detailAddr"
+                value={formDatas.detailAddr}
+                onChange={handleChange}
+                margin="normal"
               />
             </div>
 
@@ -222,6 +257,10 @@ function Join() {
           </FormControl>
         </form>
       </main>
+
+      {isOpen && <div className='addr_modal__background'>
+        <SearchAddr setAddr={setAddr} closeModal={closeModal} ></SearchAddr>
+      </div>}
     </>
   );
 }

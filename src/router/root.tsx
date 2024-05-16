@@ -5,7 +5,6 @@ const Loading = <div>Loading...</div>;
 const Basic = lazy(() => import("../pages/Basic"));
 const Login = lazy(() => import("../pages/Login"));
 const Join = lazy(() => import("../pages/Join"));
-const TestAddr = lazy(() => import("../pages/TestAddr"));
 
 const root = createBrowserRouter([
   {
@@ -29,14 +28,6 @@ const root = createBrowserRouter([
     element: (
       <Suspense fallback={Loading}>
         <Join />
-      </Suspense>
-    ),
-  },
-  {
-    path: "/TestAddr",
-    element: (
-      <Suspense fallback={Loading}>
-        <TestAddr />
       </Suspense>
     ),
   },
