@@ -69,7 +69,7 @@ function Join() {
   const checkEmailDuplication = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8083/api/v1/users/signup/check-email?email=${formDatas.email}` //이거를 어떻게 해야될지 모르겠어요
+        `http://localhost:8083/api/v1/users/check-email?email=${formDatas.email}` //이거를 어떻게 해야될지 모르겠어요
       );
       const isEmailTaken = !response.ok;
       if (isEmailTaken) {
