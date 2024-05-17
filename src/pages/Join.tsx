@@ -69,7 +69,7 @@ function Join() {
   const checkEmailDuplication = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8083/users/signup/check-email?email=${formDatas.email}` //이거를 어떻게 해야될지 모르겠어요
+        `http://localhost:8083/api/v1/users/signup/check-email?email=${formDatas.email}` //이거를 어떻게 해야될지 모르겠어요
       );
       const isEmailTaken = !response.ok;
       if (isEmailTaken) {
@@ -105,7 +105,7 @@ function Join() {
 
     console.log(formDatas); // 데이터 내용 확인
     try {
-      const response = await fetch("http://localhost:8083/users/signup", {
+      const response = await fetch("http://localhost:8083/api/v1/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +115,7 @@ function Join() {
       console.log(response);
       if (response.ok) {
         console.log("폼 데이터가 성공적으로 전송되었습니다.");
-        // 성공적으로 요청을 보낸 후에 추가적인 작업을 수행할 수 있습니다.
+        window.location.href = "/login";
       } else {
         console.error("서버에서 오류 응답을 받았습니다.");
       }

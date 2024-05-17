@@ -28,17 +28,18 @@ function Login() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8083/api/users/", {
+      let response = await fetch("http://localhost:8083/api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formDatas),
+        credentials: 'include' // 도메인 다를 때 인증정보 전송, 저장 허용 ex)쿠키 저장 시
       });
       console.log(response);
-      if (response.ok) {
+      if (response) {
         console.log("폼 데이터가 성공적으로 전송되었습니다.");
-        // 성공적으로 요청을 보낸 후에 추가적인 작업을 수행할 수 있습니다.
+        // window.location.href = "/";
       } else {
         console.error("서버에서 오류 응답을 받았습니다.");
       }
