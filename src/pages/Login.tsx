@@ -1,8 +1,19 @@
 import { Button, FormControl, TextField } from "@mui/material";
 import Header from "../component/Header";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AppContext } from '../AppContext';
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+
+  const navigate = useNavigate();
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('SomeComponent must be used within an AppProvider');
+  }
+  const { data, setData } = context;
+
+
   const [formDatas, setFormDatas] = useState({
     email: "",
     password: "",
@@ -37,9 +48,18 @@ function Login() {
         credentials: 'include' // 도메인 다를 때 인증정보 전송, 저장 허용 ex)쿠키 저장 시
       });
       console.log(response);
-      if (response) {
+      if (response.ok) {
         console.log("폼 데이터가 성공적으로 전송되었습니다.");
-        // window.location.href = "/";
+
+        setData((prevData) => ({
+          ...prevData,
+          isLogin: true,
+          menus: ['로그아웃하기'],
+        }));
+
+
+
+        navigate("/");
       } else {
         console.error("서버에서 오류 응답을 받았습니다.");
       }
@@ -77,6 +97,9 @@ function Login() {
 
             <Button type="submit" variant="contained" color="primary">
               로그인
+            </Button>
+            <Button type="button" color="primary" onClick={() => navigate("/join")}>
+              회원가입
             </Button>
           </FormControl>
         </form>

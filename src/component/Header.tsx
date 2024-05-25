@@ -12,13 +12,28 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
+import { AppContext } from '../AppContext';
+import { useNavigate } from 'react-router-dom';
+// import wer from '../assets/imgs/user2.png'; // 이미지 파일의 경로
 
-const pages = ['게시판'];
-const settings = ['로그인'];
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar(props: any) {
+
+  const navigate = useNavigate();
+  const context = React.useContext(AppContext);
+
+  if (!context) {
+    throw new Error('SomeComponent must be used within an AppProvider');
+  }
+
+  const { data, setData } = context;
+
+  const pages = ['게시판'];
+
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -27,12 +42,50 @@ function ResponsiveAppBar() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (page: String | null) => {
     setAnchorElNav(null);
+    console.log('click page: ', page)
+
+    switch (page) {
+      case '게시판':
+        navigate('/');
+        break;
+    }
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = async (menu: String) => {
     setAnchorElUser(null);
+
+
+    switch (menu) {
+      case '로그인하기':
+        navigate('/login')
+        break;
+
+
+      case '로그아웃하기':
+
+        let response = await fetch("http://localhost:8083/api/v1/auth/logout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: 'include' // 도메인 다를 때 인증정보 전송, 저장 허용 ex)쿠키 저장 시
+        });
+
+        console.log('response', response)
+        if (response.ok) {
+          setData((prevData) => ({
+            ...prevData,
+            isLogin: false,
+            menus: ['로그인하기'],
+          }));
+          navigate("/");
+        }
+
+
+        break;
+    }
   };
 
   return (
@@ -82,13 +135,13 @@ function ResponsiveAppBar() {
                 horizontal: 'left',
               }}
               open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
+              onClose={() => handleCloseNavMenu(null)}
               sx={{
                 display: { xs: 'block', md: 'none' },
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={() => handleCloseNavMenu(page)}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -117,7 +170,7 @@ function ResponsiveAppBar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => handleCloseNavMenu(page)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
@@ -128,7 +181,8 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                {data?.isLogin ? "로그인중" : "비로그인"}
+                {/* <Avatar alt="user img" src={process.env.PUBLIC_URL + '/img/user.png'}></Avatar> */}
               </IconButton>
             </Tooltip>
             <Menu
@@ -147,9 +201,10 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+
+              {data?.menus?.map((menu: any) => (
+                <MenuItem key={menu} onClick={() => handleCloseUserMenu(menu)}>
+                  <Typography textAlign="center">{menu}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -159,4 +214,5 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
+
 export default ResponsiveAppBar;
