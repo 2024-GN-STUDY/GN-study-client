@@ -1,5 +1,7 @@
 import { Box } from "@mui/material";
 import Header from "../component/Header";
+import ShortenURL from "../pages/ShortenURL"; 
+
 
 function Basic() {
   return (
@@ -25,6 +27,9 @@ function Basic() {
           }}
         >
           게시판2
+        </Box>
+        <Box>
+          <ShortenURL />
         </Box>
       </main>
     </>
