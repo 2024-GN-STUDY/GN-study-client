@@ -1,4 +1,4 @@
-import { Button, FormControl, TextField, Box, Typography } from "@mui/material";
+import { Button, FormControl, TextField, Box, Typography, Card, CardContent } from "@mui/material";
 import { useContext, useState } from "react";
 import { AppContext } from '../AppContext';
 import { useNavigate } from "react-router-dom";
@@ -59,7 +59,8 @@ function ShortenURL() {
     }
   };
 
-  const handleRedirect = async (shortedUrl: string) => {
+  const handleRedirect = async (event: React.MouseEvent<HTMLButtonElement>, shortedUrl: string) => {
+    event.preventDefault();
     try {
       let response = await fetch(`http://localhost:8083/shorted/${shortedUrl.split('/').pop()}`, {
         method: "GET",
@@ -97,20 +98,31 @@ function ShortenURL() {
               helperText={urlError}
             />
 
-            <Button type="submit" variant="contained" color="primary">
+            <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
               단축하기
             </Button>
-            <Button type="button" color="primary" onClick={() => navigate("/")}>
+            <Button type="button" color="primary" onClick={() => navigate("/")} sx={{ mt: 2 }}>
               돌아가기
             </Button>
           </FormControl>
         </form>
         {shortedUrl && (
           <Box sx={{ marginTop: "16px" }}>
-            <Typography variant="h6">단축된 URL:</Typography>
-            <a href="#" onClick={() => handleRedirect(shortedUrl)} target="_blank" rel="noopener noreferrer">
-              {shortedUrl}
-            </a>
+            <Card variant="outlined" sx={{ mt: 2 }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  단축된 URL:
+                </Typography>
+                <Button
+                  onClick={(event) => handleRedirect(event, shortedUrl)}
+                  variant="contained"
+                  color="secondary"
+                  sx={{ textTransform: 'none' }}  // 대문자 변환을 막기 위해 textTransform을 none으로 설정
+                >
+                  {shortedUrl}
+                </Button>
+              </CardContent>
+            </Card>
           </Box>
         )}
       </main>
