@@ -1,4 +1,4 @@
-import { Button, FormControl, TextField, Box, Typography, Card, CardContent } from "@mui/material";
+import { Button, FormControl, TextField, Box, Typography, Card, CardContent, Link } from "@mui/material";
 import { useContext, useState } from "react";
 import { AppContext } from '../AppContext';
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,7 @@ function ShortenURL() {
   });
   const [urlError, setUrlError] = useState("");
   const [shortedUrl, setshortedUrl] = useState("");
+  const [copySuccess, setCopySuccess] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -51,6 +52,7 @@ function ShortenURL() {
           ...prevData,
           shortedUrl: result.shortedUrl,
         }));
+        setCopySuccess(""); // 복사 성공 메시지 초기화
       } else {
         console.error("서버에서 오류 응답을 받았습니다.");
       }
@@ -59,7 +61,16 @@ function ShortenURL() {
     }
   };
 
-  const handleRedirect = async (event: React.MouseEvent<HTMLButtonElement>, shortedUrl: string) => {
+  const handleCopy = (shortedUrl: string) => {
+    navigator.clipboard.writeText(shortedUrl).then(() => {
+      setCopySuccess("URL이 클립보드에 복사되었습니다!");
+    }).catch(err => {
+      console.error('클립보드에 복사하는 동안 오류가 발생했습니다:', err);
+      setCopySuccess("복사하는 동안 오류가 발생했습니다.");
+    });
+  };
+
+  const handleRedirect = async (event: React.MouseEvent<HTMLAnchorElement>, shortedUrl: string) => {
     event.preventDefault();
     try {
       let response = await fetch(`http://localhost:8083/shorted/${shortedUrl.split('/').pop()}`, {
@@ -113,14 +124,28 @@ function ShortenURL() {
                 <Typography variant="h6" gutterBottom>
                   단축된 URL:
                 </Typography>
-                <Button
+                <Link
+                  href="#"
                   onClick={(event) => handleRedirect(event, shortedUrl)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ textTransform: 'none', display: 'block', marginBottom: '8px' }}  // 대문자 변환을 막기 위해 textTransform을 none으로 설정
+                >
+                  {shortedUrl}
+                </Link>
+                <Button
+                  onClick={() => handleCopy(shortedUrl)}
                   variant="contained"
                   color="secondary"
                   sx={{ textTransform: 'none' }}  // 대문자 변환을 막기 위해 textTransform을 none으로 설정
                 >
-                  {shortedUrl}
+                  복사
                 </Button>
+                {copySuccess && (
+                  <Typography variant="body2" color="success.main" sx={{ mt: 1 }}>
+                    {copySuccess}
+                  </Typography>
+                )}
               </CardContent>
             </Card>
           </Box>
