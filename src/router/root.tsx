@@ -8,7 +8,7 @@ const Login = lazy(() => import('../pages/Login'));
 const Join = lazy(() => import('../pages/Join'));
 const ShortenURL = lazy(() => import('../pages/ShortenURL')); // ShortenURL 컴포넌트 추가
 
-
+ 
 const root = createBrowserRouter([
   {
     path: '/',
