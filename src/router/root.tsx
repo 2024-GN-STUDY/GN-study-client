@@ -6,6 +6,8 @@ const Loading = <div>Loading...</div>;
 const Basic = lazy(() => import('../pages/Basic'));
 const Login = lazy(() => import('../pages/Login'));
 const Join = lazy(() => import('../pages/Join'));
+const ShortenURL = lazy(() => import('../pages/ShortenURL')); // ShortenURL 컴포넌트 추가
+
 
 const root = createBrowserRouter([
   {
@@ -33,6 +35,14 @@ const root = createBrowserRouter([
         element: (
           <Suspense fallback={Loading}>
             <Join />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'shorten-url', // 새로운 경로 추가
+        element: (
+          <Suspense fallback={Loading}>
+            <ShortenURL /> 
           </Suspense>
         ),
       },
